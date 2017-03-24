@@ -1,0 +1,36 @@
+ nmap -sP 172.21.0.5/16
+
+Starting Nmap 7.01 ( https://nmap.org ) at 2017-03-24 10:46 CET
+Nmap scan report for 172.21.0.1
+Host is up (0.00017s latency).
+MAC Address: 02:42:E9:92:22:17 (Unknown)
+Nmap scan report for mantel01_server3_1.mantel01_dmz (172.21.0.2)
+Host is up (0.000069s latency).
+MAC Address: 02:42:AC:15:00:02 (Unknown)
+Nmap scan report for mantel01_fwworld_1.mantel01_dmz (172.21.0.3)
+Host is up (0.000064s latency).
+MAC Address: 02:42:AC:15:00:03 (Unknown)
+Nmap scan report for mantel01_server2_1.mantel01_dmz (172.21.0.4)
+Host is up (0.000047s latency).
+MAC Address: 02:42:AC:15:00:04 (Unknown)
+Nmap scan report for mantel01_fwintern_1.mantel01_dmz (172.21.0.6)
+Host is up (0.000080s latency).
+MAC Address: 02:42:AC:15:00:06 (Unknown)
+Nmap scan report for 129df5dda228 (172.21.0.5)
+
+ uname -a
+Linux 129df5dda228 4.4.0-66-generic #87-Ubuntu SMP Fri Mar 3 15:29:05 UTC 2017 x86_  64 x86_64 x86_64 GNU/Linux
+
+ ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+484: eth0@if485: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default
+    link/ether 02:42:ac:15:00:05 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.21.0.5/16 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:acff:fe15:5/64 scope link
+       valid_lft forever preferred_lft forever
