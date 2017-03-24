@@ -1,0 +1,26 @@
+
+ID	Owner	Image	Status	IP Addr	Ports
+129df5dda228	abr131	mantel01_server1	Up 23 seconds	172.21.0.5	22/tcp
+Logs Inspect Stop Restart Remove
+e2191c6219e8	abr131	mantel01_client1	Up 22 seconds	172.24.0.3	22/tcp
+Logs Inspect Stop Restart Remove
+39e04153f6c3	abr131	mantel01_backend3	Up 24 seconds	172.22.0.5	22/tcp
+Logs Inspect Stop Restart Remove
+5aba89a5c4dc	abr131	mantel01_world2	Up 24 seconds	172.23.0.4	22/tcp
+Logs Inspect Stop Restart Remove
+45890bcbdc04	abr131	mantel01_server2	Up 23 seconds	172.21.0.4	22/tcp
+Logs Inspect Stop Restart Remove
+7b9716e216b3	abr131	mantel01_server3	Up 24 seconds	172.21.0.2	22/tcp
+Logs Inspect Stop Restart Remove
+ca29aa695ba1	abr131	mantel01_backend1	Up 22 seconds	172.22.0.4	22/tcp
+Logs Inspect Stop Restart Remove
+26fb379a8793	abr131	mantel01_backend2	Up 24 seconds	172.22.0.2	22/tcp
+Logs Inspect Stop Restart Remove
+8e59408843fb	abr131	mantel01_fwintern	Up 21 seconds	172.24.0.4 172.22.0.3 172.21.0.6	22/tcp
+Logs Inspect Stop Restart Remove
+dc187481ac21	abr131	mantel01_world1	Up 24 seconds	172.23.0.2	22/tcp
+Logs Inspect Stop Restart Remove
+692c93d53a38	abr131	mantel01_fwworld	Up 22 seconds	172.23.0.3 172.21.0.3	22/tcp
+Logs Inspect Stop Restart Remove
+1138f35908d8	abr131	mantel01_client3	Up 25 seconds	172.24.0.2	22/tcp
+Logs Inspect Stop Restart Remove
