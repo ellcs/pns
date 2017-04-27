@@ -13,20 +13,21 @@ klassifizierung:
 Firmenwebserver:
   position: server, weil die Website von aussen ereichbar sein soll.
   anwendung: nginx
-Webserver im Web:
+Webserver_im_Web:
   position: world, weil es nicht teil von der Firma ist.
   anwendung: nginx
-SMTP: ?
-  position: server, Um E-Mails zu empfangen und unterwegs (ausserhalb) Emails abzurufen. Offen bleibt, weiterer SMTP fuer backend?
+SMTP: 
+  position: server, weil email sowohl von aussen, als auch von innen versendet werden koennen.
   anwendung: postfix
-IMAP: ?
-  position: server, um E-Mails zu empfangen und unterwegs (ausserhalb) Emails abzurufen. Offen bleibt, weiterer SMTP fuer backend?
+IMAP: 
+  position: server,weil emails von aussen, als auch von innen abgerufen werden sollen.  
   anwendung: dovecot2
 Print-Server:
-  position: client, warum sollte man von aussen drucken duerfen?
+  position: client, warum sollte man von aussen drucken duerfen? nicht im backend, weil die drucker wahrscheinlich 
+            im client-netz stehen. Wir muessten dann fuer die drucker zusaetzliche regeln einrichten.
   anwendung: CUPS
-Interner DNS: ?
-  position: backend, damit das backend und das server netzwerk mit hostnamen angesprochen werden kann
+Interner_DNS:
+  position: client,weil alle internen Rechnernamen und Ip-Adressen ohne externen Referenzen gepflegt werden
   anwendung: dnsmasq
 Datenbank:
   position: backend, weil die datenbank hoechstwahrscheinlich ueber die server angesprochen werden soll,
