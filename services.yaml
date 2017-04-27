@@ -1,0 +1,50 @@
+# Es wird gelistet, welches netz mit welchem netz kommunizieren kann.
+#
+# Entscheidungshilfe zwischen backend und server: soll es von world angesprochen werden koennen?
+#
+#
+# http://www.inf.fu-berlin.de/lehre/SS00/DS/folien/Firewalls+VPNs.pdf
+klassifizierung:
+  intern: intern, backend, server, world
+  backend: backend, server, world
+  server: backend, server, world
+  world: server, world
+
+Firmenwebserver:
+  position: server, weil die Website von aussen ereichbar sein soll.
+  anwendung: nginx
+Webserver im Web:
+  position: world, weil es nicht teil von der Firma ist.
+  anwendung: nginx
+SMTP: ?
+  position: server, Um E-Mails zu empfangen und unterwegs (ausserhalb) Emails abzurufen. Offen bleibt, weiterer SMTP fuer backend?
+  anwendung: postfix
+IMAP: ?
+  position: server, um E-Mails zu empfangen und unterwegs (ausserhalb) Emails abzurufen. Offen bleibt, weiterer SMTP fuer backend?
+  anwendung: dovecot2
+Print-Server:
+  position: client, warum sollte man von aussen drucken duerfen?
+  anwendung: CUPS
+Interner DNS: ?
+  position: backend, damit das backend und das server netzwerk mit hostnamen angesprochen werden kann
+  anwendung: dnsmasq
+Datenbank:
+  position: backend, weil die datenbank hoechstwahrscheinlich ueber die server angesprochen werden soll,
+            aber nicht direkt & offen im netz liegen soll.
+  anwendung: postgres
+NTP:
+  position: backend, weil NTP hierarchisch aufgebaut ist und einen Verbindungsaufbau vornimmt. Es muss also nicht offen im netz
+            liegen. Die Server erreichen diese dennoch um die aktuelle Zeit zu erhalten und die Klienten kommen auch ran. (Koennte aber auch server)
+  anwendung: ntp
+
+Fragen:
+  - SMTP aufteilen in intern und extern?
+    Pro: bessere trennung zwischen einfluss und ausfluss.
+    Contra:
+    Nein, weil es nur eine "Demilitarisierte Zone" gibt.
+  - IMAP wirklich in intern hinein?
+    Pro: Die immer vorliegenden Mails sind im 'intern' besser gesichert.
+    Contra: Dann ist es nicht moeglich unterwegs(Im Web) via. IMAP die Mails zu ziehen.
+  - Interner DNS wie in Folien in Client?
+    Pro: Alle netzwerkkomponenten werden im Clientnetzwerk gesolved.
+    Contra: Die server und backends koennen sich dann nicht gegenseitig solven.
