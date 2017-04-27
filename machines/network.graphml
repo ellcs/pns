@@ -292,8 +292,7 @@
           <y:Geometry height="58.30099868774414" width="47.5" x="-65.39490127563475" y="-147.67599868774414"/>
           <y:Fill color="#C0C0C0" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.9375" modelName="custom" textColor="#000000" visible="true" width="49.8671875" x="-1.18359375" y="13.18174934387207">22/tcp
-631/tcp<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" textColor="#000000" visible="true" width="42.232421875" x="2.6337890625" y="20.16612434387207">22/tcp<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -443,8 +442,8 @@
           <y:Geometry height="58.30099868774414" width="47.5" x="441.3385922056491" y="132.7410011291504"/>
           <y:Fill color="#C0C0C0" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" textColor="#000000" visible="true" width="42.232421875" x="2.6337890625" y="20.16612434387207">22/tcp
-<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.9375" modelName="custom" textColor="#000000" visible="true" width="49.8671875" x="-1.18359375" y="13.18174934387207">22/tcp
+134/tcp<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -516,7 +515,7 @@
           <y:Fill color="#C0C0C0" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.9375" modelName="custom" textColor="#000000" visible="true" width="49.8671875" x="-1.18359375" y="13.18174934387207">22/tcp
-134/tcp<y:LabelModel>
+631/tcp<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -718,7 +717,7 @@
     <node id="n36">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="50.69470165326413" x="-25.347350826632038" y="-210.625"/>
+          <y:Geometry height="30.0" width="50.69470165326413" x="397.1759452059213" y="-405.0"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" textColor="#000000" visible="true" width="36.015625" x="7.339538326632066" y="6.015625">CUPS<y:LabelModel>
@@ -786,7 +785,7 @@
     <node id="n40">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="69.15814971923828" x="385.42092514038086" y="-405.0"/>
+          <y:Geometry height="30.0" width="69.15814971923828" x="472.15441862166466" y="263.0"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" textColor="#000000" visible="true" width="33.337890625" x="17.91012954711914" y="6.015625">IMAP<y:LabelModel>
@@ -1037,7 +1036,7 @@
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e22" source="n36" target="n1">
+    <edge id="e22" source="n38" target="n6">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1047,17 +1046,7 @@
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e23" source="n38" target="n6">
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="e24" source="n41" target="n14">
+    <edge id="e23" source="n41" target="n14">
       <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
@@ -1068,7 +1057,7 @@
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e25" source="n40" target="n2">
+    <edge id="e24" source="n39" target="n4">
       <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
@@ -1079,7 +1068,18 @@
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e26" source="n39" target="n4">
+    <edge id="e25" source="n40" target="n5">
+      <data key="d9"/>
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e26" source="n36" target="n2">
       <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
