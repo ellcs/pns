@@ -1,15 +1,21 @@
-```
+- [DEBUG](#debug)
+- [CONFIG](#config)
+
+# DEBUG
+
+```bash
 # dump tcp traffic (debug)
 tcpdump -i eth0 port not 22
 ```
 
-```
+```bash
 # make a request through a proxy
 wget --proxy 172.25.0.5:3128 "172.27.0.4"
 ```
 
+# CONFIG
 
-```
+```bash
 # config of squid (proxy)
 # file: /etc/squid/squid.conf
 http_port 127.0.0.1:3128
