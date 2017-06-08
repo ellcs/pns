@@ -30,8 +30,12 @@ iptables -A FORWARD -i $backend_interface -s $backend -m conntrack --ctstate NEW
 # jedes antwort-packet soll zu backend gehen koennen.
 iptables -A FORWARD -o $backend_interface -d $backend -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 # erlaube server und intern mit backend zu sprechen
-iptables -A FORWARD -s $server -d $backend -j ACCEPT
-iptables -A FORWARD -s $intern -d $backend -j ACCEPT
+iptables -A FORWARD -i $server_interface -o $backend_interface -s $server -d $backend -j ACCEPT
+iptables -A FORWARD -i $intern_interface -o $backend_interface -s $intern -d $backend -j ACCEPT
+
+
+# fwworld geht nicht direkt auf seine eigenen, sondern immer ueber fwintern
+iptables -A FORWARD -i $server_interface -i $server_interface -s $server -d $server -j ACCEPT
 
 # Alle anderen packete sollen gedroped werden
 iptables --policy INPUT DROP

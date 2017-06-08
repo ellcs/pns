@@ -27,12 +27,12 @@ iptables -A FORWARD -p tcp -i $server_interface --sport 80 -s 172.25.0.3 -j ACCE
 
 # imap
 iptables -t nat -A PREROUTING -p tcp --dport 143 -j DNAT --to 172.25.0.5:143
-iptables -A FORWARD -p tcp -i $server_interface --dport 143 -d 172.25.0.5 -j ACCEPT
+iptables -A FORWARD -p tcp -o $server_interface --dport 143 -d 172.25.0.5 -j ACCEPT
 iptables -A FORWARD -p tcp -i $server_interface --sport 143 -s 172.25.0.5 -j ACCEPT
 
 # smtp
 iptables -t nat -A PREROUTING -p tcp --dport 25 -j DNAT --to 172.25.0.2:25
-iptables -A FORWARD -p tcp -i $server_interface --dport 25 -d 172.31.0.2 -j ACCEPT
+iptables -A FORWARD -p tcp -o $server_interface --dport 25 -d 172.31.0.2 -j ACCEPT
 iptables -A FORWARD -p tcp -i $server_interface --sport 25 -s 172.31.0.2 -j ACCEPT
 
 # intern
