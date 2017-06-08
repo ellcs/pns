@@ -1,5 +1,6 @@
 - [DEBUG](#debug)
 - [CONFIG](#config)
+- [INFO](#info)
 
 # DEBUG
 
@@ -27,3 +28,18 @@ http_access deny all
 cache_dir aufs /var/spool/squid 500 256 256
 ```
 
+# INFO
+
+Exercise 2:
+- Make sure that you have firewall rules in both directions :)
+- (kpk) network overview
+  - No router images for firewalls
+  - Clients should have different images then servers
+  - Map IPs to interfaces
+  - Write down subnet-masks to networks only
+  - Move backend to a similar position as intern.
+  - No diagonal lines. Better use edges.
+- (kpk) NAT
+  - If you use a NAT, make sure that you can not access the NATed server. Why hide a server, if it's still available?
+
+Exercise 3:
