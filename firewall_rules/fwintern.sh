@@ -4,25 +4,34 @@
 # jedes packet von intern soll zu server gehen koennen.
 # jedes packet von intern soll zu  world gehen koennen.
 # Umgesetzt als: jedes packet von intern, darf ueberall hin.
+
+backend_interface="eth0"
+server_interface="eth1"
+intern_interface="eth2"
+
+backend="172.26.0.0/16"
+intern="172.28.0.0/16"
+server="172.25.0.0/16"
+
 iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 22 -j ACCEPT
 iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
 
 # intern
 # jedes ausgehende packet ist okay.
-iptables -A FORWARD -s 172.28.0.0/16 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i $intern_interface -s $intern -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 # jedes antwort-packet soll zu intern gehen koennen.
-iptables -A FORWARD -d 172.28.0.0/16 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -o $intern_interface -d $intern -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
 
 # backend
 # jedes ausgehende packet ist okay.
-iptables -A FORWARD -s 172.26.0.0/16 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i $backend_interface -s $backend -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 # jedes antwort-packet soll zu backend gehen koennen.
-iptables -A FORWARD -s 172.25.0.0/16 -d 172.26.0.0/16 -j ACCEPT
-iptables -A FORWARD -s 172.28.0.0/16 -d 172.26.0.0/16 -j ACCEPT
-iptables -A FORWARD -d 172.26.0.0/16 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -o $backend_interface -d $backend -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 # erlaube server und intern mit backend zu sprechen
+iptables -A FORWARD -s $server -d $backend -j ACCEPT
+iptables -A FORWARD -s $intern -d $backend -j ACCEPT
 
 # Alle anderen packete sollen gedroped werden
 iptables --policy INPUT DROP

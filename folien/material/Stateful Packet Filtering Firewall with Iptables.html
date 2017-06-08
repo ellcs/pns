@@ -1,0 +1,1239 @@
+
+<!-- saved from url=(0050)https://wpollock.com/AUnixSec/IptablesOverview.htm -->
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns:st1="urn:schemas-microsoft-com:office:smarttags" xmlns="http://www.w3.org/TR/REC-html40"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+<meta name="ProgId" content="Word.Document">
+<meta name="Generator" content="Microsoft Word 11">
+<meta name="Originator" content="Microsoft Word 11">
+<link rel="File-List" href="https://wpollock.com/AUnixSec/IptablesOverview_files/filelist.xml">
+<link rel="Edit-Time-Data" href="https://wpollock.com/AUnixSec/IptablesOverview_files/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>Stateful Packet Filtering Firewall with Iptables</title>
+</head><body lang="EN-US" style="tab-interval:.5in"><o:smarttagtype namespaceuri="urn:schemas-microsoft-com:office:smarttags" name="City">
+<o:smarttagtype namespaceuri="urn:schemas-microsoft-com:office:smarttags" name="country-region">
+<o:smarttagtype namespaceuri="urn:schemas-microsoft-com:office:smarttags" name="State">
+<o:smarttagtype namespaceuri="urn:schemas-microsoft-com:office:smarttags" name="place">
+<!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:ValidateAgainstSchemas/>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" LatentStyleCount="156">
+ </w:LatentStyles>
+</xml><![endif]--><!--[if !mso]><object
+ classid="clsid:38481807-CA0E-42D2-BF39-B33AF135CC4D" id=ieooui></object>
+<style>
+st1\:*{behavior:url(#ieooui) }
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:14.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:14.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;}
+</style>
+<![endif]-->
+
+
+
+
+<div class="Section1">
+
+<p class="MsoBodyTextIndent" align="center" style="margin-left:0in;text-align:center;
+page-break-before:always;page-break-after:avoid"><span class="SpellE"><b><span style="font-size:18.0pt">Stateful</span></b></span><b><span style="font-size:
+18.0pt"> Packet Filtering Firewall with <span class="SpellE">Iptables</span></span></b></p>
+
+<p class="MsoBodyTextIndent" align="center" style="margin-left:0in;text-align:center"><b><i>Lecture
+Notes (c) 2006 Prof. Wayne Pollock, <st1:place w:st="on"><st1:city w:st="on">Tampa</st1:city>
+ <st1:state w:st="on">FL</st1:state> <st1:country-region w:st="on">USA</st1:country-region></st1:place></i></b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span class="SpellE"><span class="GramE"><b><span style="font-family:&quot;Courier New&quot;">iptables</span></b></span></span> a.k.a. <span class="SpellE">netfilter</span> examines incoming and outgoing packets at various
+points.&nbsp; It does this by matching each packet against a <b><i>chain</i> of
+<i>rules</i></b>.&nbsp; Each rule contains <i>matching criteria</i> and a <i>target</i>
+which says what to do with a packet that matched the criteria.&nbsp; A chain of
+rules is a list.&nbsp; Packets are matched against each rule in a chain, in
+order, until a match occurs.&nbsp; Then the target of that rule is used
+(generally) to accept or to drop the packet.&nbsp; However the target may cause
+the packet’s header fields to be changed, to log the packet, or do another
+action.&nbsp; If no rule matches some packet then a <i>default policy</i> is
+used to decide what to do.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span class="SpellE">Iptables</span> is a
+<span class="SpellE"><b><i>stateful</i></b></span> packet filter, in that it
+keeps track of connections, statistics, and packet flows.&nbsp; Even UDP packets
+can be tracked (e.g., a DNS query and the response).&nbsp; All that information
+may be used in the criteria to match packets, or to produce reports.&nbsp; Note
+that connections have a timeout value, so <span class="SpellE">iptables</span>
+may “forget” some long idle connection and begin dropping packets.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Originally packet filters were <b><i>stateless</i></b>,
+and had to decide what to do with a packet only by examining that packet’s
+layer 3 (IP, ICMP) and 4 (TCP, UDP) headers.&nbsp; Soon the black-hats were
+tweaking and faking the various flags and fields in the headers to by-pass the
+packet filter.&nbsp; The most common attacks were to turn off the SYN bit in a
+TCP packet so the firewall would think the packet was part of an established
+session and allow it through.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Non-Linux systems today often have
+similar packet filter firewalls, which use similar concepts to <span class="SpellE"><span style="font-family:&quot;Courier New&quot;">iptables</span></span>.&nbsp;
+(<span class="SpellE"><span class="GramE"><b><span style="font-family:&quot;Courier New&quot;">ipf</span></b></span></span>
+a.k.a. <span class="SpellE">ipfilter</span> on Solaris, the Solaris default
+location for the firewall rules file is <span style="font-family:&quot;Courier New&quot;">/etc/<span class="SpellE">ipf/ipf.conf</span></span>.&nbsp; For BSD the packet filter is
+called <span style="font-family:&quot;Courier New&quot;">pf</span>, and the command to
+use it is <span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">pfctl</span></b></span>.&nbsp;
+To enable add “<span style="font-family:&quot;Courier New&quot;">pf=YES</span>” to <span style="font-family:&quot;Courier New&quot;">/etc/<span class="SpellE">rc.conf.local</span></span>.&nbsp;
+The rules go in <span style="font-family:&quot;Courier New&quot;">/etc/<span class="SpellE">pf.conf</span></span>.)</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">One problem today is that many
+applications use the same port number (e.g., MS with SMB on ports 137 and
+139).&nbsp; So you can’t filter traffic just by examining packet headers, you
+need to examine the application layer (layer 7) headers too.&nbsp; This is the
+only way for example to see if some packet going to port 80 really contains an
+HTTP request, or is some stealth IM or file transfer packet.&nbsp; Some
+commercial packet filter firewall devices can examine layer 7 data and use that
+to decide to accept or drop the packet.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">A more common solution is to use <b><i>transparent
+application proxy servers</i></b>, which receive the <i>supposed</i> HTTP
+packet, and forwards it if it really is an HTTP packet.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;text-indent:-.5in"><b>IP Accounting</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Besides packet filtering <span class="SpellE">iptables</span> collects statistics
+on byte and packet counts for each rule.&nbsp; This is called <i>accounting</i>.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span class="SpellE">Iptables</span> can
+also be used for <b>NAT</b> (including masquerading and port forwarding),
+packet <b><i>mangling</i></b> (modifying bits of the headers), and <b><i>load
+balancing</i></b>.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><b>Chains</b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;page-break-after:avoid">There are five
+built-in chains, one for each point in the kernel’s processing path:</p>
+
+<p class="MsoNormal" align="center" style="margin-top:6.0pt;margin-right:0in;
+margin-bottom:0in;margin-left:.5in;margin-bottom:.0001pt;text-align:center"><img width="462" height="182" id="_x0000_i1025" src="./Stateful Packet Filtering Firewall with Iptables_files/image001.gif"></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">The chain determines when a packet is
+examined.&nbsp; <span class="GramE">An incoming packet (from the outside to this
+host) arrive</span> at a NIC and will be processed only by the rules on the <span class="SpellE"><b>prerouting</b></span> and <b>input</b> chains.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Outgoing packets (from this host to
+another) will use the <b>output</b> and <span class="SpellE"><b>postrouting</b></span>
+chains only.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">When the host acts as a router it will
+forward some packets (from one interface to another).&nbsp; These will traverse
+only the <span class="SpellE"><b>prerouting</b></span>, <b>forward</b>, and <span class="SpellE"><b>postrouting</b></span> chains.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Some (or all) of these chains may be
+empty.&nbsp; You can set a default policy for <span class="GramE">this standard
+chains</span>.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">You can also define new chains.&nbsp;
+Such chains may be the targets of rules in other chains.&nbsp; Defining your
+own chains may be useful in a couple of situations.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">If you have a set of rules that need to
+be part of several chains, it is handy to be able to define it once.&nbsp; Then
+you add a rule to each of the built-in chains with no criteria, with a target
+of the new chain.&nbsp; Commonly, both the <b>input</b> and <b>forward</b>
+chains (of the filter table) have similar rules for dropping packets.&nbsp; So
+you create a new chain “<span class="SpellE">rulz</span>” or some other name, add
+the rules to that, and use it from both the <b>input</b> and <b>forward</b>
+chains.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Matching packets against a lot of rules
+can take time, thus increasing the latency of the packets and lowering
+throughput.&nbsp; Using a user-defined chain can help with this.&nbsp; Suppose
+it takes six (or more!) rules to determine what to do with incoming packets
+going to some particular server.&nbsp; Rather than add all the rules to the <b>input</b>
+chain, and thus force all incoming packets to be matched against them, you can
+put them in a new chain, and add a single rule to the <b>input</b> chain that
+only matches the destination IP address of the server in question, and uses the
+new chain as the target.&nbsp; (<b>Illustrate!</b>)</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Note that ordering the rules in a chain
+carefully can also affect performance.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><b>Tables</b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span class="SpellE"><span class="GramE"><span style="font-family:&quot;Courier New&quot;">iptables</span></span></span> also organizes
+rules into four <i>tables</i>.&nbsp; A rule’s table determines what targets are
+valid for that rule, as well as to which built-in chains the rule can be
+added.&nbsp; Note some targets (e.g., ACCEPT, DROP) can be used in all tables.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">There is a table for filtering the
+packets (the “<b><span style="font-family:&quot;Courier New&quot;">filter</span></b>”
+table) which can have only rules in the <b><span style="font-family:&quot;Courier New&quot;">INPUT</span></b>,
+<b><span style="font-family:&quot;Courier New&quot;">OUTPUT</span></b>, and <b><span style="font-family:&quot;Courier New&quot;">FORWARD</span></b> chains.&nbsp; Rules in
+this table don’t alter the packet in any way.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">There is a table for NAT (the “<span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">nat</span></b></span>”
+table) which uses the chains <b><span style="font-family:&quot;Courier New&quot;">PREROUTING</span></b>&nbsp;
+(for altering&nbsp; packets&nbsp; as&nbsp; soon&nbsp; as they come in), <b><span style="font-family:&quot;Courier New&quot;">OUTPUT</span></b> (for altering
+locally-generated packets before&nbsp; routing),&nbsp; and&nbsp; <b><span style="font-family:&quot;Courier New&quot;">POSTROUTING</span></b>&nbsp; (for altering
+packets as they are about to go out).&nbsp; Rules in this table are used to
+alter the source/destination IP address (and possibly port numbers) in a
+consistent way.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">There is also a <b><span style="font-family:&quot;Courier New&quot;">mangle</span></b> table and a <b><span style="font-family:&quot;Courier New&quot;">raw</span></b> table that allow rules with
+targets that do other things to packets, such as re-routing them or changing
+header values (such as the <span class="SpellE">QoS</span> field).</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">The rules in a chain are processed in
+an order determined by the table.&nbsp; You can think of each table as having
+its own set of built-in chains.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
+margin-left:.5in">The following table shows the order of processing for each of
+the four possible packet flows.&nbsp; For example consider what happens to an
+incoming packet.&nbsp; First the <b><span style="font-family:&quot;Courier New&quot;">mangle</span></b>
+then the <span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">nat</span></b></span>
+table rules in the <b><span style="font-family:&quot;Courier New&quot;">PREROUTING</span></b>
+chain are used, then the <b><span style="font-family:&quot;Courier New&quot;">mangle</span></b>
+table rules in the <b><span style="font-family:&quot;Courier New&quot;">INPUT</span></b>
+chain, and finally the <b><span style="font-family:&quot;Courier New&quot;">filter</span></b>
+table rules in the <b><span style="font-family:&quot;Courier New&quot;">INPUT</span></b>
+chain.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
+margin-left:.5in">&nbsp;</p>
+
+<div align="center">
+
+<table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;mso-padding-alt:0in 0in 0in 0in">
+ <tbody><tr style="mso-yfti-irow:0;mso-yfti-firstrow:yes;page-break-inside:avoid;
+  height:26.5pt">
+  <td width="174" style="width:130.5pt;border:solid windowtext 1.0pt;padding:
+  0in 5.75pt 0in 5.75pt;height:26.5pt">
+  <p class="MsoNormal" align="center" style="margin-top:6.0pt;text-align:center"><b><span style="font-family:Arial">Flow Type</span></b></p>
+  </td>
+  <td width="102" style="width:76.2pt;border:solid windowtext 1.0pt;border-left:
+  none;padding:0in 5.75pt 0in 5.75pt;height:26.5pt">
+  <p class="MsoNormal" align="center" style="margin-top:6.0pt;text-align:center"><b><span style="font-family:Arial">Table</span></b></p>
+  </td>
+  <td width="139" style="width:103.95pt;border:solid windowtext 1.0pt;border-left:
+  none;padding:0in 5.75pt 0in 5.75pt;height:26.5pt">
+  <p class="MsoNormal" align="center" style="margin-top:6.0pt;text-align:center"><b><span style="font-family:Arial">Chain</span></b></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:1;page-break-inside:avoid;height:5.55pt">
+  <td rowspan="4" style="border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.75pt 0in 5.75pt;height:5.55pt">
+  <p class="MsoNormal" align="center" style="margin-top:6.0pt;text-align:center"><b>incoming</b></p>
+  </td>
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:5.55pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">mangle</span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:5.55pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">PREROUTING</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:2;page-break-inside:avoid;height:5.55pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:5.55pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span class="SpellE"><span style="font-family:&quot;Courier New&quot;">nat</span></span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:5.55pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">PREROUTING</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:3;page-break-inside:avoid;height:5.55pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:5.55pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">mangle</span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:5.55pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">INPUT</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:4;page-break-inside:avoid;height:31.9pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:31.9pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">filter</span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:31.9pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">INPUT</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:5;page-break-inside:avoid;height:4.6pt">
+  <td rowspan="5" style="border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.75pt 0in 5.75pt;height:4.6pt">
+  <p class="MsoNormal" align="center" style="margin-top:6.0pt;text-align:center"><b>outgoing</b></p>
+  </td>
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:4.6pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">mangle</span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:4.6pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">OUTPUT</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:6;page-break-inside:avoid;height:4.4pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:4.4pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span class="SpellE"><span style="font-family:&quot;Courier New&quot;">nat</span></span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:4.4pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">OUTPUT</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:7;page-break-inside:avoid;height:4.4pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:4.4pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">filter</span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:4.4pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">OUTPUT</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:8;page-break-inside:avoid;height:4.4pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:4.4pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">mangle</span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:4.4pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">POSTROUTING</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:9;page-break-inside:avoid;height:4.4pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:4.4pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span class="SpellE"><span style="font-family:&quot;Courier New&quot;">nat</span></span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:4.4pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">POSTROUTING</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:10;page-break-inside:avoid;height:3.7pt">
+  <td rowspan="6" style="border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.75pt 0in 5.75pt;height:3.7pt">
+  <p class="MsoNormal" align="center" style="margin-top:6.0pt;text-align:center"><b>forwarding</b></p>
+  </td>
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:3.7pt">
+  <p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><span style="font-family:&quot;Courier New&quot;">mangle</span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:3.7pt">
+  <p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><span style="font-family:&quot;Courier New&quot;">PREROUTING</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:11;page-break-inside:avoid;height:3.7pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:3.7pt">
+  <p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><span class="SpellE"><span style="font-family:&quot;Courier New&quot;">nat</span></span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:3.7pt">
+  <p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><span style="font-family:&quot;Courier New&quot;">PREROUTING</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:12;page-break-inside:avoid;height:3.7pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:3.7pt">
+  <p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><span style="font-family:&quot;Courier New&quot;">mangle</span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:3.7pt">
+  <p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><span style="font-family:&quot;Courier New&quot;">FORWARD</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:13;page-break-inside:avoid;height:3.7pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:3.7pt">
+  <p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><span style="font-family:&quot;Courier New&quot;">filter</span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:3.7pt">
+  <p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><span style="font-family:&quot;Courier New&quot;">FORWARD</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:14;page-break-inside:avoid;height:3.7pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:3.7pt">
+  <p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><span style="font-family:&quot;Courier New&quot;">mangle</span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:3.7pt">
+  <p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><span style="font-family:&quot;Courier New&quot;">POSTROUTING</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:15;page-break-inside:avoid;height:3.7pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:3.7pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span class="SpellE"><span style="font-family:&quot;Courier New&quot;">nat</span></span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:3.7pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">POSTROUTING</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:16;page-break-inside:avoid;height:7.8pt">
+  <td rowspan="5" style="border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.75pt 0in 5.75pt;height:7.8pt">
+  <p class="MsoNormal" align="center" style="margin-top:6.0pt;text-align:center"><b>socket<br>
+  (process-to-process)</b></p>
+  </td>
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:7.8pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">mangle</span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:7.8pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">OUTPUT</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:17;page-break-inside:avoid;height:7.65pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:7.65pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span class="SpellE"><span style="font-family:&quot;Courier New&quot;">nat</span></span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:7.65pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">OUTPUT</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:18;page-break-inside:avoid;height:7.65pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:7.65pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">filter</span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:7.65pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">OUTPUT</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:19;page-break-inside:avoid;height:7.65pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:7.65pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">filter</span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:7.65pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">INPUT</span></p>
+  </td>
+ </tr>
+ <tr style="mso-yfti-irow:20;mso-yfti-lastrow:yes;page-break-inside:avoid;
+  height:7.65pt">
+  <td width="102" style="width:76.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:7.65pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">mangle</span></p>
+  </td>
+  <td width="139" style="width:103.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.75pt 0in 5.75pt;height:7.65pt">
+  <p class="MsoNormal" style="margin-top:6.0pt"><span style="font-family:&quot;Courier New&quot;">INPUT</span></p>
+  </td>
+ </tr>
+</tbody></table>
+
+</div>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Use the “<b><span style="font-family:
+&quot;Courier New&quot;">-t <i>table</i></span></b>” option to specify which table to use
+when adding/removing a rule.&nbsp; If this option is omitted then the <b><span style="font-family:&quot;Courier New&quot;">filter</span></b> table is used by default.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><b>Rules and
+match criteria</b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">A <i>rule</i> is zero or more matching criteria
+and one (optional) target.&nbsp; A rule is added to a specific table and
+chain.&nbsp; A rule with no criteria matches all packets.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;page-break-after:avoid">A rule with no
+target does nothing; processing will continue with the next rule on the
+chain.&nbsp; Such a rule may be useful for accounting purposes.&nbsp; <span class="SpellE">Iptables</span> keeps a byte and a packet count for each <span class="GramE">rule, that</span> is updated whenever a packet matches the rule’s
+criteria.&nbsp; So, to count all incoming packets on interface eth0:</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span style="font-family:&quot;Courier New&quot;">&nbsp;&nbsp;&nbsp;
+<span class="SpellE"><span class="GramE">iptables</span></span> -A INPUT -<span class="SpellE">i</span> eth0</span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;page-break-after:avoid">By default <span class="SpellE">iptables</span> can use criteria that match IPv4 layers 3 and 4
+headers:</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;page-break-after:avoid"><span style="font-size:12.0pt;font-family:&quot;Courier New&quot;">-d [!] <i>destination <span class="GramE">address<span style="font-style:normal">[</span></span></i>/<i>mask</i>]<i>
+</i>-s [!] <i>source address</i>[/<i>mask</i>]</span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;page-break-after:avoid"><span style="font-size:12.0pt;font-family:&quot;Courier New&quot;">-<span class="SpellE">i</span>
+[!] <i>input
+interface&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </i>-o
+[!] <i>output interface</i></span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;page-break-after:avoid"><span class="GramE"><span style="font-size:12.0pt;font-family:&quot;Courier New&quot;">-p [!] <i>protocol&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</i>[!]</span></span><span style="font-size:12.0pt;font-family:&quot;Courier New&quot;">
+-f</span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Here’s an example: <span class="SpellE"><span style="font-family:&quot;Courier New&quot;">iptables</span></span><span style="font-family:
+&quot;Courier New&quot;"> -t</span> <span style="font-family:&quot;Courier New&quot;">filter -A</span>
+<span style="font-family:&quot;Courier New&quot;">INPUT <b>-<span class="SpellE">i</span></b></span><b>
+</b><b><span style="font-family:&quot;Courier New&quot;">lo</span></b><span style="font-family:&quot;Courier New&quot;"> -j</span> <span style="font-family:&quot;Courier New&quot;">ACCEPT</span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span class="GramE">A “<span style="font-family:&quot;Courier New&quot;">!</span>” means “not”.</span>&nbsp; For most
+values either numbers or names can be given: port numbers or service names, IP
+addresses or DNS name, protocol number or name, and even interfaces can be
+given names.&nbsp; Most criteria have other names: <span style="font-family:
+&quot;Courier New&quot;">&#8209;s</span>&nbsp;=&nbsp;<span style="font-family:&quot;Courier New&quot;">&#8209;&#8209;source</span>&nbsp;=&nbsp;<span style="font-family:&quot;Courier New&quot;">&#8209;&#8209;<span class="SpellE">src</span></span>.&nbsp;
+When omitted the default is to match on all (i.e., no “<span style="font-family:
+&quot;Courier New&quot;">-p</span>” is the same as “<span style="font-family:&quot;Courier New&quot;">-p</span>&nbsp;<span style="font-family:&quot;Courier New&quot;">all</span>”).&nbsp; Note it is a bad idea to
+use a DNS name that would cause a remote DNS query!</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><b>The “</b><b><span style="font-family:
+&quot;Courier New&quot;">-f</span>” matches fragments</b> (all but the first frame of a
+fragmented IP packet).</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">For interfaces you can follow the name
+with a “<span style="font-family:&quot;Courier New&quot;">+</span>” to indicate all
+interfaces that start with that name (e.g., “<span class="SpellE"><span style="font-family:&quot;Courier New&quot;">ppp</span></span><span style="font-family:
+&quot;Courier New&quot;">+</span>”, “<span style="font-family:&quot;Courier New&quot;">eth+</span>”).</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">To use additional criteria a <i>match
+extension</i> must be used.&nbsp; Each match extension provides a set of extra
+criteria you can add to the rule.&nbsp; You specify which match extensions you
+want to use using the “<span style="font-family:&quot;Courier New&quot;">-m <span class="SpellE"><i>extension_name</i></span></span>”, followed by the criteria
+that extension enables.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">A few match extensions are loaded
+automatically if you use the corresponding protocol in the rule: <span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">tcp</span></b></span>, <span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">udp</span></b></span>,
+and <span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">icmp</span></b></span>.&nbsp;
+The first two allow “<span style="font-family:&quot;Courier New&quot;">--<span class="SpellE">dport</span></span>&nbsp;<i><span style="font-family:&quot;Courier New&quot;">num</span></i>”
+and “<span style="font-family:&quot;Courier New&quot;">--sport</span>&nbsp;<i><span style="font-family:&quot;Courier New&quot;">num</span></i>” to specify source and
+destination port numbers (and ranges).&nbsp; The <span class="SpellE"><span style="font-family:&quot;Courier New&quot;">icmp</span></span> match extension allows “<span style="font-family:&quot;Courier New&quot;">--<span class="SpellE">icmp</span>-type</span>&nbsp;<i><span style="font-family:&quot;Courier New&quot;">type</span></i>”.&nbsp; (And others too.)</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;page-break-after:avoid">To see which
+criteria an extension <span class="GramE">provides,</span> use:</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;page-break-after:avoid"><span style="font-family:&quot;Courier New&quot;">&nbsp;&nbsp;&nbsp; <span class="SpellE"><span class="GramE">iptables</span></span> -m <span class="SpellE"><i>extension_name</i></span><i>
+--help</i></span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;page-break-after:avoid">Some match
+extensions will cause the kernel to load additional loadable kernel modules.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;page-break-after:avoid">The <span class="SpellE">iptables</span> man page lists all the match extensions
+available.&nbsp; One special match extension is “<span class="SpellE"><span style="font-family:&quot;Courier New&quot;">arp</span></span>”, which enables layer 2 match
+criteria.&nbsp; A very useful match extension is “<span style="font-family:
+&quot;Courier New&quot;">state</span>”, which can be used to see if a packet is part of
+an existing session (or flow):</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;page-break-after:avoid"><span style="font-family:&quot;Courier New&quot;">&nbsp;<span class="SpellE"><span class="GramE">iptables</span></span></span>
+<span style="font-family:&quot;Courier New&quot;">-A</span> <span style="font-family:
+&quot;Courier New&quot;">INPUT -m</span> <span style="font-family:&quot;Courier New&quot;">state
+--state</span> <span style="font-family:&quot;Courier New&quot;">ESTABLISHED -j</span> <span style="font-family:&quot;Courier New&quot;">ACCEPT</span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><b>Targets</b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">The target of a rule determines what to
+do with a packet that matched the criteria.&nbsp; You specify the target with
+the “<span style="font-family:&quot;Courier New&quot;">-j <i>target</i></span>”
+option.&nbsp; For example:</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span style="font-family:&quot;Courier New&quot;">&nbsp;
+<span class="SpellE"><span class="GramE">iptables</span></span> -A INPUT -<span class="SpellE">i</span> eth0 -p <span class="SpellE">tcp</span> --<span class="SpellE">dport</span> 23 <b>-j DROP</b></span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span class="GramE">says</span> to <span style="font-family:&quot;Courier New&quot;">DROP</span> (discard and ignore) any packets
+that match the criteria: incoming, from network interface <span style="font-family:&quot;Courier New&quot;">eth0</span>, to TCP port 23 (telnet).</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">There are only four built-in <span class="GramE">targets,</span> however additional <i>target extensions </i>can be
+used.&nbsp; The standard distribution includes many target extensions.&nbsp;
+Some targets are only valid in chains in a particular table.&nbsp; (For example
+the NAT targets are only valid in the <span class="SpellE"><span style="font-family:&quot;Courier New&quot;">nat</span></span> table.)&nbsp; Target
+extensions (especially those that modify the packet) allow additional
+commands.&nbsp; For example:</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span style="font-family:&quot;Courier New&quot;">&nbsp;
+<span class="SpellE">iptables</span> -t</span> <span style="font-family:&quot;Courier New&quot;">mangle
+-A</span> <span style="font-family:&quot;Courier New&quot;">PREROUTING -p</span> <span class="SpellE"><span style="font-family:&quot;Courier New&quot;">tcp</span></span><span style="font-family:&quot;Courier New&quot;"> --<span class="SpellE">dport</span></span> <span style="font-family:&quot;Courier New&quot;">80 \<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>-j</b></span><b>
+</b><b><span style="font-family:&quot;Courier New&quot;">MARK --set-mark</span> </b><b><span style="font-family:&quot;Courier New&quot;">3</span></b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">To see what additional commands a
+target extension allows, use:</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span style="font-family:&quot;Courier New&quot;">&nbsp;&nbsp;&nbsp;
+<span class="SpellE"><span class="GramE">iptables</span></span> -j <i>target</i>
+--help</span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">As with match extensions, some target
+extensions will cause the kernel to load additional modules.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;page-break-after:avoid">Some of the more
+commonly used targets are (the first 3 are built-in targets):</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:2.0in;margin-bottom:.0001pt;text-indent:-94.5pt"><b><span style="font-family:&quot;Courier New&quot;">ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; </span></b><i>obvious</i></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:2.0in;margin-bottom:.0001pt;text-indent:-94.5pt"><b><span style="font-family:&quot;Courier New&quot;">DROP</span></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<i>obvious</i></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:2.0in;margin-bottom:.0001pt;text-indent:-94.5pt"><b><span style="font-family:&quot;Courier New&quot;">RETURN</span></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+This is the default target at the end of a user-defined chain.&nbsp; It means
+to return to the next rule in the parent chain.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:2.0in;margin-bottom:.0001pt;text-indent:-94.5pt"><b><span style="font-family:&quot;Courier New&quot;">REJECT</span></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Discard the packet, but send an ICMP message back to the source.&nbsp; Useful
+when the source in <span class="SpellE">in</span> your AS but don’t use when
+source is the Internet!&nbsp; Use <span style="font-family:&quot;Courier New&quot;">DROP</span>
+instead.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:2.0in;margin-bottom:.0001pt;text-indent:-94.5pt"><span class="GramE"><b><span style="font-family:&quot;Courier New&quot;">LOG</span></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Use to log the packet to the kernel logger (<span class="SpellE"><span style="font-family:&quot;Courier New&quot;">dmesg</span></span>, <span class="SpellE"><span style="font-family:&quot;Courier New&quot;">syslog</span></span>).</span>&nbsp; This
+target is special in that it doesn’t terminate the packet processing.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:2.0in;margin-bottom:.0001pt;text-indent:-94.5pt"><b><span style="font-family:&quot;Courier New&quot;">MARK</span></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Used with the iproute2 and the <span class="SpellE"><span class="GramE"><span style="font-family:&quot;Courier New&quot;">tc</span></span></span> command for advanced
+routing and traffic shaping.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:2.0in;margin-bottom:.0001pt;text-indent:-94.5pt"><b><span style="font-family:&quot;Courier New&quot;">DNAT</span></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Used to configure transparent proxy.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:2.0in;margin-bottom:.0001pt;text-indent:-94.5pt"><span class="GramE"><b><span style="font-family:&quot;Courier New&quot;">SNAT</span></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Used for IP Masquerade when the source has a static IP address.</span>&nbsp; It
+specifies<span class="GramE">&nbsp; that</span>&nbsp; the&nbsp; source address of
+the packet should be modified (and all future packets in this connection will
+also&nbsp; be&nbsp; mangled).</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:2.0in;margin-bottom:.0001pt;text-indent:-94.5pt"><b><span style="font-family:&quot;Courier New&quot;">MASQUERADE</span></b>&nbsp;&nbsp; Used for IP
+Masquerade when the source has a dynamic IP address.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:2.0in;margin-bottom:.0001pt;text-indent:-94.5pt"><span class="GramE"><b><i>chain</i></b></span><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</b>Send the packet to another chain for further processing.&nbsp; If that
+chain’s rules fail to match the packet, then processing will continue with the
+next rule in the current chain.&nbsp; <span class="GramE">(See also <b><span style="font-family:&quot;Courier New&quot;">RETURN</span> </b>target.)</span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><b>Using </b><span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">iptables</span></b></span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">To add or remove rules from chains you specify
+the table (default is <span style="font-family:&quot;Courier New&quot;">filter</span>)
+and the chain.&nbsp; For example, to append a new rule to the end of the <span style="font-family:&quot;Courier New&quot;">OUTPUT</span> chain of the <span class="SpellE"><span style="font-family:&quot;Courier New&quot;">nat</span></span> table:</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span style="font-family:&quot;Courier New&quot;">&nbsp;&nbsp;&nbsp;
+<span class="SpellE"><span class="GramE">iptables</span></span> -t <span class="SpellE">nat</span> -A OUTPUT <i>criteria</i> -j <i>action</i></span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">You can insert rules in any position in
+the chain by using “<b><span style="font-family:&quot;Courier New&quot;">-I</span></b>”
+instead of “<b><span style="font-family:&quot;Courier New&quot;">-A</span></b>”.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">To delete a rule
+use:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">iptables</span></b></span><b><span style="font-family:&quot;Courier New&quot;"> -D&nbsp;<i>chain</i>&nbsp;{<span class="SpellE"><i>rule</i>|<i>rule</i></span><i>-num</i>}</span></b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">To delete all rules use:
+&nbsp;&nbsp;&nbsp; <span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">iptables</span></b></span><b><span style="font-family:&quot;Courier New&quot;"> &#8209;F</span></b>&nbsp;<b><span style="font-family:&quot;Courier New&quot;">[<i>chain</i>]</span></b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Create a new chain with:&nbsp; <span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">iptables</span></b></span><b><span style="font-family:&quot;Courier New&quot;"> [-t <i>table</i>] -N <i>name</i></span></b>.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Delete all user-defined chains: <span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">iptables</span></b></span><b><span style="font-family:&quot;Courier New&quot;"> -X</span></b><span style="font-family:&quot;Courier New&quot;">
+<b>[<i>chain</i>]</b></span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">List [all] rules [no DNS]:&nbsp; <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</b><span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">iptables</span></b></span><b><span style="font-family:&quot;Courier New&quot;"> [-v] [-n] -L</span></b>.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Reset per-rule packet and byte
+counters:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">iptables</span></b></span><b><span style="font-family:&quot;Courier New&quot;"> -Z [<i>chain</i>]</span></b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">You can set the default policy for a
+built-in chain with:<br>
+<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b><span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">iptable</span></b></span><b><span style="font-family:&quot;Courier New&quot;"> -P <i>chain </i>{ACCEPT|DROP<span class="GramE">}</span></span></b><span style="font-family:&quot;Courier New&quot;"><br>
+U</span>ser-defined chains don’t have default policies but you can just put a
+reject/drop everything rule at the end for the same effect.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">The best way to work with complex sets
+of rules is to edit the file where <span class="GramE">your</span> OS stores the
+rules (in the “<span class="SpellE"><span style="font-family:&quot;Courier New&quot;">iptables</span></span><span style="font-family:&quot;Courier New&quot;">-save</span>” format), then simply restart <span class="SpellE"><span style="font-family:&quot;Courier New&quot;">iptables</span></span>.&nbsp;
+On Red Hat systems this is <span style="font-family:&quot;Courier New&quot;">/etc/<span class="SpellE">sysconfig/iptables</span></span>.&nbsp; If there is no such file
+(on other systems) then save the rules as a shell script that you can run at
+boot time.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">When building a firewall you can use
+the <span class="SpellE">iptables</span> command to modify the currently loaded
+(in RAM) rules.&nbsp; These take effect immediately.&nbsp; Once you’ve added
+and tweaked the rules to the point that they work, you can save the current
+rules to a file with <span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">iptables</span></b></span><b><span style="font-family:&quot;Courier New&quot;">-save</span></b>.&nbsp; The result can be
+used as input to <span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">iptables</span></b></span><b><span style="font-family:&quot;Courier New&quot;">-restore</span></b>.&nbsp; You can see this
+in the file <b><span style="font-family:&quot;Courier New&quot;">/etc/<span class="SpellE">sysconfig/iptables</span></span></b>,
+which is where RH stores the firewall rules.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><b>Filtering
+Basics &nbsp; </b>[<i>Adapted from “Linux firewalls” 3rd Ed., by <span class="SpellE">Suehring</span> and Ziegler,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;(C<span class="GramE">)2006</span> by <span class="SpellE">Peason</span> Ed.</i>]</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Start by deleting all user defined chains,
+and clearing all rules from the five built in chains.&nbsp; Next add a default
+policy of DROP to the INPUT, OUTPUT, and FORWARD chains.&nbsp; (The other two
+chains don’t need to drop packets, so you can leave the default-default policy
+of ACCEPT for them.)</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">If you stop here you are safe!&nbsp;
+But it will pay to add some holes in this firewall.&nbsp; At this point is <span class="SpellE">is</span> a good idea to check that all kernel level network
+protections have been enabled.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">A very common situation to <span class="SpellE">to</span> allow the same packets into this host as you will allow
+your host to forward, when acting as a router.&nbsp; If not routing you can
+just add filter table rules to the INPUT and OUTPUT chains.&nbsp; If routing,
+you will usually want the same rules for the INPUT and FORWARD chains.&nbsp;
+The way to deal with this is to create a new user-defined chain, say “MYRULZ”,
+and all the common rules to this chain.&nbsp; Then you only have this for INPUT
+and FORWARD:</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:1.0in;margin-bottom:.0001pt"><span class="GramE"><span style="font-family:&quot;Courier New&quot;">-A</span></span><span style="font-family:
+&quot;Courier New&quot;"> INPUT -j MYRULZ<br>
+-A FORWARD -j MYRULZ</span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">It is usually safe and useful to accept
+packets from your <span class="SpellE">loopback</span> interface.&nbsp; These can
+only have been sent from programs on your host, to other programs on your
+host.&nbsp; So add this (if using routing, add to MYRULZ instead):</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:1.0in;margin-bottom:.0001pt"><span style="font-family:&quot;Courier New&quot;">-A
+INPUT -<span class="SpellE">i</span> lo -j ACCEPT</span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Next we want to allow some outside
+packets to get through.&nbsp; To start with we want to allow return packets
+from our outgoing connections.&nbsp; This generally means to allow incoming <span class="SpellE">packes</span> that are part of some <i>established</i>
+conversation.&nbsp; <span class="GramE">(TCP or UDP).</span>&nbsp; However you
+may also want to allow <i>related</i> packets, if using FTP (FTP establishes an
+outgoing connection, then the remote server initiates another using a different
+port.&nbsp; This is related to but not part of the established conversation.)</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span style="font-family:&quot;Courier New&quot;">&nbsp;-A</span>
+<span style="font-family:&quot;Courier New&quot;">INPUT -m</span> <span style="font-family:
+&quot;Courier New&quot;">state --state</span> <span style="font-family:&quot;Courier New&quot;">ESTABLISHED<span class="GramE">,RELATED</span> -j</span> <span style="font-family:&quot;Courier New&quot;">ACCEPT</span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><b>Some packets are obviously <span class="GramE">fake</span> and should never be allowed</b>, no matter what holes
+you decide to add.&nbsp; You should drop any incoming packets from a NIC with
+the following source addresses (<b>See RFC-3330 </b><i>list of special IPv4
+addresses</i>):</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">You host’s IP address assigned to that
+NIC.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Any address from one of your internal
+LANs (that is attached to a different NIC)</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Class A, B, C private addresses:
+10.0.0.0 - 10.255.255.255, 172.16.0.0 - 172.31.255.255, 192.168.0.0 -
+192.168.255.255.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Class D (multicast) addresses (these
+are legal destinations only, never sources): 224.0.0.0 - 239.255.255.255</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Class E (reserved) addresses: 240.0.0.0
+- 247.255.255.255</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Higher addresses are not used legally:
+248.0.0.0 - 255.255.255.255</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span class="SpellE">Looback</span>
+addresses: 127.0.0.0 - 127.255.255.255</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Illegal source broadcast
+addresses.&nbsp; While some <span class="SpellE">broadcase</span> source
+addresses are legal on a single LAN (e.g., 0.0.0.0 for a DHCP requests) you
+will never see any broadcast address from the Internet, or as a regular
+non-broadcast packet.&nbsp; So in many cases you can filter out any source of
+0.0.0.0 - 0.255.255.255, and also 255.255.255.255.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Link-local addresses are reserved for <span class="SpellE">zeroconf</span> addressing and are private on a given <span class="SpellE"><span class="GramE">lan</span></span>, if used at all.&nbsp; So
+these addresses are not <span class="SpellE">vald</span> sources from other
+networks: 169.254.0.0 - 169.254.255.255</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">192.0.2.0/24 block is reserved for
+TEST-NET, to be used in examples and documentation.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">192.88.99.0/24 - This block is
+allocated for use as 6to4 relay <span class="SpellE">anycast</span> addresses,
+according to [RFC3068].&nbsp; So if you don’t use IPv6 then you shouldn’t see
+these.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">198.18.0.0/15 - This block has been allocated
+for <span class="GramE">use in benchmark tests of network interconnect</span>
+devices. Its use is documented in [RFC2544].</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Any <span class="SpellE">unallocation</span>
+addresses.&nbsp; You can check IANA and the various <span class="SpellE">RARs</span>
+(e.g., ARIN) to see which blocks are currently unassigned.&nbsp; No legal
+packet should have such a source address.&nbsp; But be careful!&nbsp; New
+allocations are made all the time so you would have to carefully monitor those
+and frequently update your firewall.&nbsp; (I don’t know of any site that
+provides you will alerts on this, but it would be a good idea!)</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Any known problem networks/hosts.&nbsp;
+You can simply drop all <span class="SpellE">packes</span> that come from problem
+sites, provided those sites aren’t also used for legitimate purposes.&nbsp; A
+business must balance the extra security against lost of customers.&nbsp; (An <span class="SpellE">alterniative</span> is to <i>rate limit</i> packets from those
+sites.)</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><b>Limiting
+Sources and Services</b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">In many cases you can limit some types
+of traffic to only be legal from a small number of source <span class="SpellE">IPs</span><span class="GramE">..</span>&nbsp; For example SSH (port 22) access to a production
+server should only be allowed from a few places: inside the company LAN, and
+perhaps a few remote sites that have administrative access.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">You can also drop traffic based on
+source port.&nbsp; Legitimate packets for services such as mail or web will
+have a source port in the unregistered (<i>dynamic</i> or <i>private</i>) range
+of 49152 through 65535.&nbsp; While there may be exceptions you will need to
+allow (e.g., SMB) in general source ports in the range 0 to 49151 (and
+especially the <i>well-known</i> ports of 0 to 1023.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">At this point is <span class="SpellE">is</span>
+just a matter of adding rules for the holes you with to allow.&nbsp; For
+example to allow access to a web service (port 80):</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span style="font-family:&quot;Courier New&quot;">&nbsp;-A</span>
+<span style="font-family:&quot;Courier New&quot;">INPUT -m</span> <span style="font-family:
+&quot;Courier New&quot;">state --state</span> <span style="font-family:&quot;Courier New&quot;">NEW
+-p</span> <span class="SpellE"><span style="font-family:&quot;Courier New&quot;">tcp</span></span><span style="font-family:&quot;Courier New&quot;"> --<span class="SpellE">dport</span></span> <span style="font-family:&quot;Courier New&quot;">80 -j</span> <span style="font-family:&quot;Courier New&quot;">ACCEPT</span></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Don’t forget to allow related ports,
+such as DNS, IPP, MTA, POP, HTTPS, etc.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">In the end you may wish to add a rule
+to drop the packets.<span style="mso-spacerun:yes">&nbsp; </span>The purpose is to
+be able to see the <i style="mso-bidi-font-style:normal">accounting</i>
+statistics on packets dropped.<span style="mso-spacerun:yes">&nbsp; </span>To
+troubleshoot your system you may also add LOG rules. (<b style="mso-bidi-font-weight:
+normal">Show log from <span class="SpellE">yborstudent</span>.</b>)</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><b>Egress
+Filtering<o:p></o:p></b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:-.25in;margin-bottom:
+0in;margin-left:.5in;margin-bottom:.0001pt">Many sites assume no local evil
+users or security problems and simply allow any outgoing packet (set the policy
+on the OUTPUT chain to ACCEPT and add no rules).</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:-13.5pt;margin-bottom:
+0in;margin-left:.5in;margin-bottom:.0001pt">A better approach it to limit
+outgoing packets to ones with a correct source IP address (and source port),
+and that are part of an established session.<span style="mso-spacerun:yes">&nbsp;
+</span>A production server will rarely if ever initiate out-going connections,
+it should just respond to incoming ones.<span style="mso-spacerun:yes">&nbsp;
+</span>(There are exceptions, e.g. a mail server using a real-time black list
+or an FTP server.)<span style="mso-spacerun:yes">&nbsp; </span>If you do allow
+out-going sessions then limit where they go by destination port (i.e., only
+allow the MTA to connect to the RTBL-DNS at <span style="font-family:&quot;Courier New&quot;">sbl&#8209;xbl.spamhaus.org</span>,
+or SSH to specific servers.)</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><b>Filtering
+examples and <span class="SpellE">gotchas</span></b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">When you have multiple <span class="SpellE">NICs</span> the system may not detect them in the same order every
+time.&nbsp; So “eth0” and “eth1” may be different.&nbsp; Try to give your <span class="SpellE">NICs</span> better (stable) names (like INTERNET or DMZ or
+PRIVATE-LAN, and use those names in <span class="SpellE">iptables</span> rules.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">To allow remote X window GUI access can
+be dangerous.&nbsp; <span class="SpellE"><span class="GramE"><span style="font-family:&quot;Courier New&quot;">ssh</span></span></span> can be used to
+provide a more secure <b><i>tunnel</i></b> for X, POP/ IMAP, etc.&nbsp; To
+allow remote X for the local LAN only is still dangerous (because a black hat
+may <i>spoof</i> the IP address of some server on your LAN and open windows on
+your server or do other more nasty things).&nbsp; <b>X sessions start at port
+6000</b> (for session 0), 6001, (for <i>IP</i><span class="GramE">:1</span>),
+etc.&nbsp; Blocking all ports from 6000 – 6009 is often done to stop X but
+unfortunately this range overlaps other registered services, so you must be
+careful.&nbsp; You might allow access to ports 6000 – 6004 to localhost (or the
+local LAN) only.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">There was a posting about preventing
+SSH dictionary attacks on <span class="SpellE">SlashDot</span>, and several
+people posted <span class="SpellE"><span style="font-family:&quot;Courier New&quot;">iptables</span></span>
+methods of dealing with this, using the “recent” rule.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">“Rundown on SSH Brute Force Attacks” at
+http://it.slashdot.org/article.pl?sid=05/07/16/1615233<span class="GramE">&nbsp;
+This</span> is what was posted (there was a more complicated one that allowed
+for <span class="SpellE">ssh</span> IP white-listing too):</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">-A PREROUTING -p <span class="SpellE">tcp</span>
+-d $EXTERNAL --<span class="SpellE">dport</span> 22 -m recent --<span class="SpellE">rcheck</span> \<br>
+&nbsp;&nbsp;&nbsp; --<span class="SpellE">hitcount</span> 3 --seconds 600 -j LOG
+--log-prefix "SSH attack<span class="GramE">: "</span></p>
+
+<p class="MsoNormal" style="margin-left:.5in">-A PREROUTING -p <span class="SpellE">tcp</span> -d $EXTERNAL --<span class="SpellE">dport</span> 22 -m
+recent --<span class="SpellE">rcheck</span> \<br>
+&nbsp;&nbsp; --<span class="SpellE">hitcount</span> 3 --seconds 600 -j DROP</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">-A PREROUTING -p <span class="SpellE">tcp</span>
+-d $EXTERNAL --<span class="SpellE">dport</span> 22 -m recent --set \<br>
+&nbsp;&nbsp;&nbsp; -j DNAT --to-destination $INTERNAL<span class="GramE">:22</span>&nbsp;
+# ???</p>
+
+<p class="MsoNormal" style="margin-left:.5in">-A OUTPUT -p <span class="SpellE">tcp</span>
+-d $EXTERNAL --<span class="SpellE">dport</span> 22 -j DNAT \<br>
+&nbsp;&nbsp; --to-destination $INTERNAL<span class="GramE">:22</span>&nbsp;&nbsp;
+# ???</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">A simpler approach is to use the <span style="font-family:&quot;Courier New&quot;">limit</span> match extension. The following
+lines block SSH connections from the beginning:</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span class="SpellE"><span class="GramE">iptables</span></span>
+-A INPUT -<span class="SpellE">i</span> eth0 -p <span class="SpellE">tcp</span> --<span class="SpellE">dport</span> 22 -m state \<br>
+&nbsp; --state ESTABLISHED -j ACCEPT</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;page-break-after:avoid"><span class="SpellE"><span class="GramE">iptables</span></span> -A INPUT -<span class="SpellE">i</span> eth0 -p <span class="SpellE">tcp</span> --<span class="SpellE">dport</span> 22 -m state --state NEW -m limit \<br>
+&nbsp;&nbsp;&nbsp; --limit 5/min -j ACCEPT</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;page-break-after:avoid"><span class="SpellE"><span class="GramE">iptables</span></span> -A INPUT -<span class="SpellE">i</span> eth0 -p <span class="SpellE">tcp</span> --<span class="SpellE">dport</span> 22 -j DROP</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">With these three rules, incoming SSH
+connections are limited to five, established connections are unaffected and
+otherwise the packets are dropped.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">The <span class="SpellE"><b>hashlimit</b></span>
+match extension (run "<span class="SpellE"><b><span style="font-family:&quot;Courier New&quot;">iptables</span></b></span><b><span style="font-family:&quot;Courier New&quot;"> -m <span class="SpellE">hashlimit</span>
+--help</span></b>" for more information on it) allows you to rate-limit
+traffic with unique limits based on source IP address (among other
+things).&nbsp; For example:</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"># <span class="SpellE"><span class="GramE">iptables</span></span>
+-A INPUT -m <span class="SpellE">hashlimit</span> -p <span class="SpellE">tcp</span>
+--<span class="SpellE">dport</span> 22 --<span class="SpellE">hashlimit</span>
+1/min \<br>
+&nbsp;&nbsp; --<span class="SpellE">hashlimit</span>-mode <span class="SpellE">srcip</span>
+--<span class="SpellE">hashlimit</span>-name <span class="SpellE">ssh</span> -m
+state --state NEW -j ACCEPT</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"># <span class="SpellE"><span class="GramE">iptables</span></span>
+-A INPUT -p <span class="SpellE">tcp</span> --<span class="SpellE">dport</span> 22
+-m state --state NEW -j DROP</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"># <span class="GramE">cat</span>
+/proc/net/<span class="SpellE">ipt_hashlimit/ssh</span><br>
+9 64.12.26.80:0-&gt;0.0.0.0:0 9600000 <span class="SpellE">9600000</span> 1920000<br>
+9 127.0.0.1:0-&gt;0.0.0.0:0 259392 9600000 1920000</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;page-break-after:avoid"><b>Transparent
+HTTP Proxy Example</b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">This last example comes from the <i>Transparent
+Proxy with Linux and Squid</i> How&#8209;to, from the Linux Documentation
+Project.&nbsp; Here we have a Linux box used as a router, with <span style="font-family:&quot;Courier New&quot;">eth0</span> connected to the “outside-net”
+(Parameter) network (i.e., the connection to your ISP and the Internet), <span style="font-family:&quot;Courier New&quot;">eth1</span> connected to the “inside-net”
+network.&nbsp; (Aside: networks can be assigned names in <span style="font-family:&quot;Courier New&quot;">/etc/networks</span>.)&nbsp; The IP address
+of <span style="font-family:&quot;Courier New&quot;">eth1</span> is “router-inside”.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">In the inside-net is the squid proxy
+server, with IP address of “squid-server”.&nbsp; It listens for traffic on port
+3128.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">On the router you need these commands:</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span class="SpellE"><span class="GramE"><b><span style="font-size:13.0pt">iptables</span></b></span></span><b><span style="font-size:13.0pt"> -t mangle -A PREROUTING -p <span class="SpellE">tcp</span>
+--<span class="SpellE">dport</span> 80 -s squid-server -j ACCEPT</span></b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span class="SpellE"><span class="GramE"><b><span style="font-size:13.0pt">iptables</span></b></span></span><b><span style="font-size:13.0pt"> -t mangle -A PREROUTING -p <span class="SpellE">tcp</span>
+--<span class="SpellE">dport</span> 80 -j MARK --set-mark 3</span></b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span class="SpellE"><span class="GramE"><b><span style="font-size:13.0pt">ip</span></b></span></span><b><span style="font-size:
+13.0pt"> rule add <span class="SpellE">fwmark</span> 3 table 2</span></b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span class="SpellE"><span class="GramE"><b><span style="font-size:13.0pt">ip</span></b></span></span><b><span style="font-size:
+13.0pt"> route add default via squid-box dev eth1 table 2</span></b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Note that the choice of firewall mark (3)
+and routing table (2) was arbitrary.&nbsp; If you are already using policy
+routing or firewall marking for some other purpose, make sure you choose
+different numbers here.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">The first rule tells the router to
+accept TCP packets going to port 80 of the squid server.&nbsp; The second rule <i>marks</i>
+all incoming TCP packets to port 80 <i>except those going to the squid server</i>.&nbsp;
+The order of these two rules is significant and a common source of error and
+confusion.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">The last two commands set up a routing policy
+for marked packets.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">The first thing we do is to select the
+packets we want.&nbsp; Thus, all packets to port 80, except those coming from
+squid-server itself, are <span class="SpellE">MARKed</span>.&nbsp; Then, when the
+kernel goes to make a routing decision the <span class="SpellE"><span class="GramE">MARKed</span></span> packets aren’t routing using the normal
+routing table that you access with the “route” command, but with a special
+table.&nbsp; Together these commands route all marked packets to the squid
+server.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">Next the squid-server needs one rule:</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><span class="SpellE"><span class="GramE"><b>iptables</b></span></span><b>
+-A PREROUTING -t <span class="SpellE">nat</span> -<span class="SpellE">i</span>
+eth0 -p <span class="SpellE">tcp</span> --<span class="SpellE">dport</span> 80 \</b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt"><b>&nbsp;&nbsp;&nbsp;&nbsp; -<span class="GramE">j</span> REDIRECT --to-port 3128</b></p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">This rule uses DNAT (<i>destination NAT</i>)
+to change the destination port number of TCP packets arriving in from <span style="font-family:&quot;Courier New&quot;">eth0</span> (on the squid server, not the
+router) to port 3128.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">An HTTP proxy such as squid works as
+follows:&nbsp; A user on a workstation uses a web browser to visit
+www.example.com (which uses port 80 by default).&nbsp; The browser determines
+the IP address of www.example.com, creates an HTTP request packet, and sends it
+there.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">For non-transparent <span class="SpellE">proxying</span>,
+the browser is configured with the IP address and port number of the proxy
+server (in our example squid-server<span class="GramE">:3128</span>).&nbsp; Squid
+reads the HTTP headers to determine the real destination IP.&nbsp; It then
+sends the HTTP request, caches the reply, and finally returns the HTTP reply to
+the original workstation.</p>
+
+<p class="MsoNormal" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt">For transparent proxy, no workstations
+need any special configuration.&nbsp; Instead you have the router do all the
+work.</p>
+
+<p class="MsoNormal">&nbsp;</p>
+
+</div>
+
+
+
+
+</o:smarttagtype></o:smarttagtype></o:smarttagtype></o:smarttagtype></body><div></div></html>

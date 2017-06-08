@@ -1,46 +1,57 @@
 # fwworld
 # jedes packet von intern soll zu world gehen koennen.
 # jedes antwort packet soll zu intern gehen koennen.
-# intern: eth0
-# extern: eth1
+# intern: $eth0
+# extern: $eth1
+
+export server_interface="eth0"
+export world_interface="eth1"
+
+export backend="172.26.0.0/16"
+export intern="172.28.0.0/16"
+export server="172.25.0.0/16"
+
 iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 22 -j ACCEPT
 iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
 
-iptables --policy INPUT DROP
-iptables --policy OUTPUT DROP
-iptables --policy FORWARD DROP
 
 # fextern
 # http server der firma
 # MASQUERADE aktiviert das NATing. Das interne interface muss angegeben werden.
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o $server_interface -j MASQUERADE
 
-iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT --to 172.25.0.3:80
-iptables -A FORWARD -i eth1 -p tcp --dport 80 -d 172.25.0.3 -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --sport 80 -s 172.25.0.3 -j ACCEPT
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to 172.25.0.3:80
+iptables -A FORWARD -p tcp -o $server_interface --dport 80 -d 172.25.0.3 -j ACCEPT
+iptables -A FORWARD -p tcp -i $server_interface --sport 80 -s 172.25.0.3 -j ACCEPT
 
 # imap
-iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 143 -j DNAT --to 172.25.0.5:143
-iptables -A FORWARD -i eth0 -p tcp --dport 143 -d 172.25.0.5 -j ACCEPT
-iptables -A FORWARD -i eth1 -p tcp --sport 143 -s 172.25.0.5 -j ACCEPT
+iptables -t nat -A PREROUTING -p tcp --dport 143 -j DNAT --to 172.25.0.5:143
+iptables -A FORWARD -p tcp -i $server_interface --dport 143 -d 172.25.0.5 -j ACCEPT
+iptables -A FORWARD -p tcp -i $server_interface --sport 143 -s 172.25.0.5 -j ACCEPT
 
 # smtp
-iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 25 -j DNAT --to 172.25.0.2:25
-iptables -A FORWARD -i eth0 -p tcp --dport 25 -d 172.31.0.2 -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --sport 25 -s 172.31.0.2 -j ACCEPT
+iptables -t nat -A PREROUTING -p tcp --dport 25 -j DNAT --to 172.25.0.2:25
+iptables -A FORWARD -p tcp -i $server_interface --dport 25 -d 172.31.0.2 -j ACCEPT
+iptables -A FORWARD -p tcp -i $server_interface --sport 25 -s 172.31.0.2 -j ACCEPT
 
 # intern
 # jedes ausgehende packet ist okay.
-iptables -A FORWARD -s 172.28.0.0/16 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-# jedes antwort-packet soll zu intern gehen koennen.
-iptables -A FORWARD -d 172.28.0.0/16 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -s $intern -i $server_interface -o $world_interface -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -d $intern -i $world_interface -o $server_interface -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
 # backend
 # jedes ausgehende packet ist okay.
-iptables -A FORWARD -s 172.26.0.0/16 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 # jedes antwort-packet soll zu backend gehen koennen.
-iptables -A FORWARD -d 172.26.0.0/16 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -s $backend -i $server_interface -o $world_interface -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -d $backend -i $world_interface -o $server_interface -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A FORWARD -s $server -i $server_interface -o $world_interface -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -d $server -i $world_interface -o $server_interface -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+iptables --policy INPUT DROP
+iptables --policy OUTPUT DROP
+iptables --policy FORWARD DROP
 
 # server:  "172.25.0.0"
 # backend: "172.26.0.0"

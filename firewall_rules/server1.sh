@@ -26,6 +26,8 @@
 # ssh: port 22
 # nginx webserver: port 80
 
+export interface="eth0"
+
 iptables -A INPUT  -p tcp --dport 22 -j ACCEPT
 iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
 
