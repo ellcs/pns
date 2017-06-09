@@ -37,8 +37,8 @@ case "$HOST" in
     ;;
   272f4cc9748a|82a69612b1dc|755518a7bf89)
     echo "Server network"
-    gateway_world="172.25.0.4"
-    gateway_intern="172.25.0.6"
+    gateway_world="172.25.0.6"
+    gateway_intern="172.25.0.4"
     route add -net "172.26.0.0" netmask $NETMASK gateway $gateway_intern metric 1
     route add -net "172.27.0.0" netmask $NETMASK gateway $gateway_world metric 1
     route add -net "172.28.0.0" netmask $NETMASK gateway $gateway_intern  metric 1
