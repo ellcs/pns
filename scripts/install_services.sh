@@ -22,6 +22,10 @@
 # ae64303a4462	mantel01_client1	172.28.0.4
 # 97162ee057e8	mantel01_client3	172.28.0.2
 
+# on all systems
+apt update -y
+apt install -y nmap socat tcpdump iptables
+
 if [[ "$HOST" == "" ]]; then
   HOST=$HOSTNAME
 fi
@@ -41,20 +45,26 @@ case "$HOST" in
     ;;
   272f4cc9748a)
     echo "Server1"
-    apt-get install nginx
+    apt-get install -y nginx
     service nginx start
     ;;
   82a69612b1dc)
     echo "Server2"
+    # smtp
+    ;;
   755518a7bf89)
     echo "Server3"
+    # http-proxy
+    apt install -y squid
+    service squid start
+    # imap
     ;;
   2241e81007bb)
     echo "world1"
     ;;
   dae0274ccffd)
     echo "world2"
-    apt-get install nginx
+    apt-get install nginx -y
     service nginx start
     ;;
   ae64303a4462)
