@@ -1,66 +1,67 @@
 #!/bin/bash
+#
+# f8bb0972b716	mantel_server1		10.100.1.3
+# 90599f0e3ddd	mantel_server3		10.100.1.4
+# a01efd6f1bd9	mantel_server2		10.100.1.2
+# 1f843d58a334	mantel_backend1		10.100.2.2
+# 890bca43f496	mantel_backend2		10.100.2.3
+# 5a3c1d025952	mantel_backend3		10.100.2.4
+# 71fb71bb3d58	mantel_world1			10.100.0.2
+# 3c0ac63fd804	mantel_world2			10.100.0.4
+# a34f0c4944a7	mantel_client1		10.100.3.3
+# 2c5e84370d88	mantel_client3		10.100.3.2
+# cc623f1fe1fa	mantel_fwworld		10.100.0.3
+# fb9d2643f3f1	mantel_fwintern		10.100.2.5
 
-# server:  "172.25.0.0"
-# backend: "172.26.0.0"
-# world:   "172.27.0.0"
-# client:  "172.28.0.0"
-# 70ab0a05aa0f	mantel01_fwintern	172.25.0.4 172.28.0.3 172.26.0.5
-# b79953b0d499	mantel01_fwworld	172.27.0.3 172.25.0.6
-# 272f4cc9748a	mantel01_server1	172.25.0.3
-# 82a69612b1dc	mantel01_server2	172.25.0.2
-# 755518a7bf89	mantel01_server3	172.25.0.5
-# 88bd130ba3ec	mantel01_backend1	172.26.0.2
-# 14a0fa88f525	mantel01_backend2	172.26.0.3
-# 14322b435899	mantel01_backend3	172.26.0.4
-# 2241e81007bb	mantel01_world1	  172.27.0.2
-# dae0274ccffd	mantel01_world2	  172.27.0.4
-# ae64303a4462	mantel01_client1	172.28.0.4
-# 97162ee057e8	mantel01_client3	172.28.0.2
+world_network="10.100.0.0"
+server_network="10.100.1.0"
+backend_network="10.100.2.0"
+client_network="10.100.3.0"
 
 if [[ "$HOST" == "" ]]; then
   HOST=$HOSTNAME
 fi
 echo "Hostname: $HOST"
-NETMASK="255.255.0.0"
+NETMASK="255.255.255.0"
 case "$HOST" in
-  88bd130ba3ec|14a0fa88f525|14322b435899)
+  1f843d58a334|890bca43f496|5a3c1d025952)
     echo "Backend network"
-    gateway="172.26.0.5"
-    route add -net "172.25.0.0" netmask $NETMASK gateway $gateway metric 1
-    route add -net "172.27.0.0" netmask $NETMASK gateway $gateway metric 1
-    route add -net "172.28.0.0" netmask $NETMASK gateway $gateway metric 1
+    gateway="10.100.2.5"
+    route add -net $world_network  netmask $NETMASK gateway $gateway metric 1
+    route add -net $server_network netmask $NETMASK gateway $gateway metric 1
+    route add -net $client_network netmask $NETMASK gateway $gateway metric 1
     ;;
-  272f4cc9748a|82a69612b1dc|755518a7bf89)
+  f8bb0972b716|90599f0e3ddd|a01efd6f1bd9)
     echo "Server network"
-    gateway_world="172.25.0.6"
-    gateway_intern="172.25.0.4"
-    route add -net "172.26.0.0" netmask $NETMASK gateway $gateway_intern metric 1
-    route add -net "172.27.0.0" netmask $NETMASK gateway $gateway_world metric 1
-    route add -net "172.28.0.0" netmask $NETMASK gateway $gateway_intern  metric 1
+    gateway_fwworld="10.100.1.6"
+    gateway_fwintern="10.100.1.5"
+    route add -net $client_network  netmask $NETMASK gateway $gateway_fwintern metric 1
+    route add -net $world_network   netmask $NETMASK gateway $gateway_fwworld  metric 1
+    route add -net $backend_network netmask $NETMASK gateway $gateway_fwintern metric 1
     ;;
-  2241e81007bb|dae0274ccffd)
+  71fb71bb3d58|3c0ac63fd804)
     echo "World network"
-    gateway="172.27.0.3"
-    route add -net "172.25.0.0" netmask $NETMASK gateway $gateway metric 1
-    route add -net "172.26.0.0" netmask $NETMASK gateway $gateway metric 1
-    route add -net "172.28.0.0" netmask $NETMASK gateway $gateway metric 1
+    gateway="10.100.0.3"
+    route add -net $server_network  netmask $NETMASK gateway $gateway metric 1
+    route add -net $backend_network netmask $NETMASK gateway $gateway metric 1
+    route add -net $client_network  netmask $NETMASK gateway $gateway metric 1
     ;;
-  ae64303a4462|97162ee057e8)
+  a34f0c4944a7|2c5e84370d88)
     echo "Client network"
-    gateway="172.28.0.3"
-    route add -net "172.25.0.0" netmask $NETMASK gateway $gateway metric 1
-    route add -net "172.26.0.0" netmask $NETMASK gateway $gateway metric 1
-    route add -net "172.27.0.0" netmask $NETMASK gateway $gateway metric 1
+    gateway="10.100.3.4"
+    route add -net $world_network   netmask $NETMASK gateway $gateway metric 1
+    route add -net $server_network  netmask $NETMASK gateway $gateway metric 1
+    route add -net $backend_network netmask $NETMASK gateway $gateway metric 1
     ;;
-  70ab0a05aa0f)
+  fb9d2643f3f1)
     echo "Firewall intern"
-    gateway="172.25.0.6"
-    route add -net "172.27.0.0" netmask $NETMASK gateway $gateway metric 1
+    gateway_fwworld="10.100.1.6"
+    route add -net $world_network netmask $NETMASK gateway $gateway_fwworld metric 1
     ;;
-  b79953b0d499)
+  cc623f1fe1fa)
     echo "Firewall world"
-    gateway="172.25.0.4"
-    route add -net "172.26.0.0" netmask $NETMASK gateway $gateway metric 1
-    route add -net "172.28.0.0" netmask $NETMASK gateway $gateway metric 1
+    gateway_fwintern="10.100.1.5"
+    route add -net $client_network  netmask $NETMASK gateway $gateway_fwintern metric 1
+    route add -net $backend_network netmask $NETMASK gateway $gateway_fwintern metric 1
     ;;
 esac
