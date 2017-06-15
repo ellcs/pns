@@ -1,5 +1,0 @@
-root@8e59408843fb:~# ip route show
-default via 172.22.0.1 dev eth0
-172.21.0.0/16 dev eth2  proto kernel  scope link  src 172.21.0.6
-172.22.0.0/16 dev eth0  proto kernel  scope link  src 172.22.0.3
-172.24.0.0/16 dev eth1  proto kernel  scope link  src 172.24.0.4
