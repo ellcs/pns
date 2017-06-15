@@ -15,7 +15,7 @@
 
 # First arg has to be $FILE you want to copy
 for c in $(cat container_list.txt); do
-  docker exec -it $c "$1"
+  docker exec -it $c /bin/bash -c "$1"
 done
 
 echo $hosts
