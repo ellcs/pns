@@ -3,6 +3,8 @@
 # intern: eth0
 # extern: eth1
 
+export eth_server="eth0"
+export eth_world="eth1"
 
 export server1="10.100.1.3"
 export server2="10.100.1.2"

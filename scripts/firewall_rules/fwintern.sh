@@ -5,6 +5,10 @@
 # jedes packet von intern soll zu  world gehen koennen.
 # Umgesetzt als: jedes packet von intern, darf ueberall hin.
 
+export eth_server="eth1"
+export eth_client="eth2"
+export eth_backend="eth0"
+
 export client="10.100.3.0/24"
 export world="10.100.0.0/24"
 export backend="10.100.2.0/24"
