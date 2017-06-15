@@ -43,3 +43,5 @@ Exercise 2:
   - If you use a NAT, make sure that you can not access the NATed server. Why hide a server, if it's still available?
 
 Exercise 3:
+
+
