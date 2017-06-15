@@ -4,14 +4,14 @@
 # extern: eth1
 
 
-export server1="172.25.0.2"
-export server2="172.25.0.4"
-export server3="172.25.0.3"
+export server1="10.100.1.3"
+export server2="10.100.1.2"
+export server3="10.100.1.4"
 
-export client="172.28.0.0/16"
-export world="172.27.0.0/16"
-export backend="172.26.0.0/16"
-export server="172.25.0.0/16"
+export client="10.100.3.0/24"
+export world="10.100.0.0/24"
+export backend="10.100.2.0/24"
+export server="10.100.1.0/24"
 
 iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 22 -j ACCEPT
