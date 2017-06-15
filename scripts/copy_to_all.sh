@@ -13,6 +13,7 @@
 # cc623f1fe1fa	mantel_fwworld		10.100.0.3
 # fb9d2643f3f1	mantel_fwintern		10.100.2.5
 
+# First arg has to be $FILE you want to copy
 for c in $(cat container_list.txt); do
   CMD="docker cp $1 $c:root/"
   echo $CMD
