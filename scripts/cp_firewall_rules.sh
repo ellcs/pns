@@ -13,9 +13,9 @@
 # cc623f1fe1fa	mantel_fwworld		10.100.0.3
 # fb9d2643f3f1	mantel_fwintern		10.100.2.5
 
-# First arg has to be $FILE you want to copy
-for c in $(cat container_list.txt); do
-  docker exec -it $c /bin/bash -c "$1"
-done
+docker cp  firewall_rules/server1.sh mantel_server1_1:root/
+docker cp  firewall_rules/server2.sh mantel_server2_1:root/
+docker cp  firewall_rules/server3.sh mantel_server3_1:root/
 
-echo $hosts
+docker cp  firewall_rules/fwintern.sh mantel_fwworld_1:root/
+docker cp  firewall_rules/fwworld.sh  mantel_fwintern_1:root/
