@@ -17,5 +17,5 @@ docker cp  firewall_rules/server1.sh mantel_server1_1:root/
 docker cp  firewall_rules/server2.sh mantel_server2_1:root/
 docker cp  firewall_rules/server3.sh mantel_server3_1:root/
 
-docker cp  firewall_rules/fwintern.sh mantel_fwworld_1:root/
-docker cp  firewall_rules/fwworld.sh  mantel_fwintern_1:root/
+docker cp  firewall_rules/fwworld.sh  mantel_fwworld_1:root/
+docker cp  firewall_rules/fwintern.sh mantel_fwintern_1:root/
