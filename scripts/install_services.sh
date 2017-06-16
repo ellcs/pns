@@ -14,10 +14,10 @@
 #  mantel_fwworld	cc623f1fe1fa		10.100.0.3
 
 # ALL
-#source execute_on_all.sh "apt-get -y upgrade"
-#source execute_on_all.sh "apt-get -y install socat"
-#source execute_on_all.sh "apt-get -y install tcpdump"
-#source execute_on_all.sh "apt-get -y install netcat"
+source execute_on_all.sh "apt-get -y upgrade"
+source execute_on_all.sh "apt-get -y install socat"
+source execute_on_all.sh "apt-get -y install tcpdump"
+source execute_on_all.sh "apt-get -y install netcat"
 
 # WORLD
 docker exec -it mantel_world2_1 /bin/bash -c "apt-get -y install nginx"  

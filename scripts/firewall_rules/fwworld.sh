@@ -49,3 +49,7 @@ iptables -A FORWARD -o $eth_server -d $backend -m conntrack --ctstate ESTABLISHE
 # server - stateful
 iptables -A FORWARD -i $eth_server -s $server -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -o $eth_server -d $server -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+iptables --policy INPUT DROP
+iptables --policy FORWARD DROP
+iptables --policy OUTPUT DROP
