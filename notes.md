@@ -14,6 +14,17 @@ tcpdump -i eth0 port not 22
 wget --proxy 172.25.0.5:3128 "172.27.0.4"
 ```
 
+
+```bash
+# Local forwarding
+# Forward a remote port to the local machine.
+#   -f run in background
+#   -N execute no command
+#   <localport>:<ip-of-target>:<target-port>
+#
+ssh -f -N -L 30:10.100.2.3:1337 root@10.100.1.4
+```
+
 # CONFIG
 
 ```bash
